@@ -1,11 +1,17 @@
 import sys
-
+import os
 from lark import Lark
 from ast_builder import ASTBuilder
 from interpreter import Interpreter
 
-# Carrega a gramática
-with open("grammar.lark") as f:
+# Garante que grammar.lark seja encontrado mesmo em executável
+if getattr(sys, 'frozen', False):
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+else:
+    base_path = os.path.dirname(os.path.abspath(__file__))
+
+grammar_path = os.path.join(base_path, "grammar.lark")
+with open(grammar_path) as f:
     grammar = f.read()
 
 parser = Lark(grammar, parser='lalr', transformer=ASTBuilder())
